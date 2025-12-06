@@ -1,6 +1,7 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route,  Routes } from "react-router";
 import { ThemeProvider } from "./components/theme-provider";
 import LandingPage from "./pages/landingPage";
+import LoginPage from "./pages/loginpage";
 
 export default function  App() {
   return (
@@ -10,6 +11,7 @@ export default function  App() {
       <BrowserRouter>
       <Routes>
          <Route path="/" element={<LandingPage/>} />
+         <Route path = "/login" element = {<LoginPage/>}/>
       </Routes>
       </BrowserRouter>
 
