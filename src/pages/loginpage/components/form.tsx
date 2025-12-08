@@ -4,20 +4,43 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { ArrowRight, ChevronLeft } from "lucide-react";
 import { Checkbox } from "@radix-ui/react-checkbox";
-
+import { Link, useNavigate } from "react-router";
+import { useLoginMutation } from "@/lib/slices/authSlice";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe] = useState(false);
-  //   const form = useForm({
-  //     resolver: zodResolver(formSchema),
-  //     defaultValues: {
-  //       email: "",
-  //     },
-  //   });
+  const navigate = useNavigate();
+  const [login, { isLoading, isError, error }] = useLoginMutation();
 
-  const handleLogin = async function () {
+  console.log(isError, error);
+  const handleLogin = async function (e: Event) {
+    e.preventDefault();
     console.log("Logging IN....");
+    try {
+      const data = await login({ email, password }).unwrap();
+      const role = data.user?.role;
+      switch (role) {
+        case "user":
+          navigate("/user/dashboard");
+          break;
+        case "mentor":
+          navigate("/mentor/dashboard");
+          break;
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        default:
+          navigate("/profile");
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+      console.error(
+        "Login Failed-----------",
+        error?.data?.message || "Something went wrong!"
+      );
+    }
   };
 
   return (
@@ -32,7 +55,7 @@ export default function Login() {
               Sign In
             </h2>
 
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={(e) => handleLogin(e)} className="space-y-6">
               {/* Username or Email Input */}
               <div>
                 <Input
@@ -102,6 +125,7 @@ export default function Login() {
 
             {/* Sign In with Google Button */}
             <Button
+              disabled={isLoading}
               variant="outline"
               className="w-full py-3 h-auto text-base text-gray-700 border-gray-300 hover:bg-gray-50 rounded-lg flex items-center justify-center"
               onClick={() => console.log("Sign in with Google")}
@@ -150,7 +174,9 @@ const BrandSidebar = () => (
 
     <div className="flex items-center text-purple-700 cursor-pointer hover:text-purple-900">
       <ChevronLeft className="w-4 h-4 mr-1" />
-      <span className="text-sm">Back</span>
+      <Link to="/">
+        <span className="text-sm">Back</span>
+      </Link>
     </div>
   </div>
 );
