@@ -5,7 +5,10 @@ import { useState } from "react";
 import { ArrowRight, ChevronLeft } from "lucide-react";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { Link, useNavigate } from "react-router";
-import { useLoginMutation } from "@/lib/slices/authSlice";
+import { useLoginMutation } from "@/lib/slices/authApi";
+import { useDispatch } from "react-redux";
+import {  setCredentials } from "@/lib/slices/authSlice";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,12 +16,16 @@ export default function Login() {
   const navigate = useNavigate();
   const [login, { isLoading, isError, error }] = useLoginMutation();
 
-  console.log(isError, error);
+  const dispatch = useDispatch();
+
   const handleLogin = async function (e: Event) {
     e.preventDefault();
-    console.log("Logging IN....");
     try {
       const data = await login({ email, password }).unwrap();
+      console.log(data);
+      dispatch(
+        setCredentials({ acessToken: data.acessToken, user: data.user })
+      );
       const role = data.user?.role;
       switch (role) {
         case "user":

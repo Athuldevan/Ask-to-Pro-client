@@ -1,17 +1,39 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createSlice } from "@reduxjs/toolkit";
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_AUTH_SERVICE_URL , credentials:'include'}),
-  endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (credentials) => ({
-        url: '/login',
-        method: 'POST',
-        body: credentials,
-      }),
-    }),
-  }),
+
+interface IUser {
+  _id : string;
+  name : string;
+  email:string;
+  
+  
+};
+
+interface Authstate {
+  acessToken: string | null;
+  user:IUser | null
+}
+
+const initialState: Authstate = {
+  acessToken: null,
+  user: null
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setCredentials: (state, action) => {
+      state.acessToken = action.payload.acessToken;
+      state.user = action.payload.user;
+    },
+    logout: (state) => {
+      state.acessToken = null;
+      state.user = null;
+    },
+  },
 });
 
-export const {useLoginMutation} = authApi;
+
+export const {setCredentials, logout} = authSlice.actions;
+export default authSlice.reducer
