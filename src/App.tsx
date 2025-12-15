@@ -4,7 +4,8 @@ import LandingPage from "./pages/landingPage";
 import LoginPage from "./pages/loginpage";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/profile";
-
+import MyBookingsPage from "./pages/bookings";
+import FindMentorsPage from "./pages/findMentors";
 
 export default function App() {
   return (
@@ -14,7 +15,9 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/user/dashboard" element={<Dashboard />}>
-          <Route path ="profile" element={<Profile/>}/>
+            <Route path="profile" element={<Profile />} />
+            <Route path="mybookings" element={<MyBookingsPage />} />
+            <Route path="mentors" element={<FindMentorsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

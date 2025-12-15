@@ -1,21 +1,11 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { RootState } from "@/store";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import {  createBaseQueryWithReauth } from "../api/customBaseQuery";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_AUTH_SERVICE_URL,
-    credentials: "include",
-    prepareHeaders: (headers, { getState }) => {
-     const store = getState() as RootState
-      const token =  store.auth.acessToken;
-      if(!token) console.log("Sorry Token is not found")
-    if (token) {
-      headers.set("authorization", `Bearer ${token}`);
-    }
-    return headers;
-  },
-  }),
+  baseQuery: createBaseQueryWithReauth(
+    import.meta.env.VITE_AUTH_SERVICE_URL
+  ),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
@@ -25,11 +15,11 @@ export const authApi = createApi({
       }),
     }),
 
-    logout : builder.mutation<void,void>({
-     query :()=> ({
-      url  :"/logout",
-      method:'POST'
-     })
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
     }),
 
     viewProfile: builder.query({
@@ -41,4 +31,5 @@ export const authApi = createApi({
   }),
 });
 
-export const { useLoginMutation, useViewProfileQuery, useLogoutMutation } = authApi;
+export const { useLoginMutation, useViewProfileQuery, useLogoutMutation } =
+  authApi;

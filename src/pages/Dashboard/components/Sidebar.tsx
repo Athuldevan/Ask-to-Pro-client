@@ -1,26 +1,34 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {  Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, ChevronsRight, Home, Calendar, MessageCircle, Settings, icons } from "lucide-react";
+import {
+  ChevronsLeft,
+  ChevronsRight,
+  Home,
+  Calendar,
+  MessageCircle,
+  Settings,
+  icons,
+} from "lucide-react";
 import { useLogoutMutation } from "@/lib/slices/authApi";
 
 export default function Sidebar() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
-  const [logout] = useLogoutMutation()
+  const [logout] = useLogoutMutation();
 
   const sidebarLinks = [
-    { label: "Dashboard", href: "/user/dashboard", icon: Home },
-    { label: "My Bookings", href: "/mybookings", icon: Calendar },
+    { label: "FindMentors", href: "/user/dashboard/mentors", icon: Home },
+    { label: "My Bookings", href: "mybookings", icon: Calendar },
     { label: "Messages", href: "/messages", icon: MessageCircle },
     { label: "Settings", href: "/setting", icon: Settings },
-    {label : "Logout", href : "/", icon : icons.LogOut}
+    { label: "Logout", href: "/", icon: icons.LogOut },
   ];
 
-function handleLogout() {
-logout();
-}
+  function handleLogout() {
+    logout();
+  }
   return (
     <nav
       className={cn(
@@ -58,7 +66,10 @@ logout();
 
           return (
             <Link key={item.href} to={item.href}>
-              <Button onClick={()=> item.label === 'logout' ? handleLogout : undefined}
+              <Button
+                onClick={() =>
+                  item.label === "logout" ? handleLogout : undefined
+                }
                 variant="ghost"
                 className={cn(
                   "w-full flex items-center gap-3 justify-start rounded-lg font-medium transition",
@@ -81,7 +92,7 @@ logout();
       <div className="flex-1" />
 
       {/* Footer */}
-      {!collapsed &&(
+      {!collapsed && (
         <p className="px-6 pb-6 text-gray-500 dark:text-gray-600 text-sm">
           © Ask to Pro
         </p>

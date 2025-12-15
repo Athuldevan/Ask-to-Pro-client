@@ -7,7 +7,7 @@ import { Checkbox } from "@radix-ui/react-checkbox";
 import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "@/lib/slices/authApi";
 import { useDispatch } from "react-redux";
-import {  setCredentials } from "@/lib/slices/authSlice";
+import { setCredentials } from "@/lib/slices/authSlice";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ export default function Login() {
       const data = await login({ email, password }).unwrap();
       console.log(data);
       dispatch(
-        setCredentials({ acessToken: data.acessToken, user: data.user })
+        setCredentials({ accessToken: data.accessToken, user: data.user })
       );
       const role = data.user?.role;
       switch (role) {

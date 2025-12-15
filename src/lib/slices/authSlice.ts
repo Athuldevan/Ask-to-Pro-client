@@ -10,12 +10,12 @@ interface IUser {
 };
 
 interface Authstate {
-  acessToken: string | null;
+  accessToken: string | null;
   user:IUser | null
 }
 
 const initialState: Authstate = {
-  acessToken: null,
+  accessToken: null,
   user: null
 };
 
@@ -24,11 +24,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      state.acessToken = action.payload.acessToken;
+      state.accessToken = action.payload.accessToken;
       state.user = action.payload.user;
     },
     logout: (state) => {
-      state.acessToken = null;
+      state.accessToken = null;
       state.user = null;
     },
   },
