@@ -21,6 +21,10 @@ export default function App() {
             <Route path="mentors" element={<FindMentorsPage />} />
             <Route path="mentors/:id" element={<MentorDetailsPage />} />
           </Route>
+          <Route
+            path="/mentor/dashboard"
+            element={<p>Mentor Dashbaior d Page Goes Here </p>}
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
