@@ -4,7 +4,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Link } from "react-router";
 
-export default function Header() {
+interface HeaderProps {
+  role: "student" | "mentor" | "admin";
+}
+
+export default function Header({ role }: HeaderProps) {
+  const welcomeText =
+    role === "mentor"
+      ? "Welcome back, Mentor!"
+      : role === "admin"
+        ? "Welcome back, Admin!"
+        : "Welcome back, Student!";
   return (
     <header
       className="w-full h-20 
@@ -15,7 +25,7 @@ export default function Header() {
       {/* Left Section */}
       <div>
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-          Welcome back, Student!
+          {welcomeText}
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Find the perfect mentor for you
@@ -54,7 +64,7 @@ export default function Header() {
         </div>
 
         {/* Avatar */}
-        <Link to = "/user/dashboard/profile">
+        <Link to={`/${role === "student" ? "user" : role}/dashboard/profile`}>
           <Avatar className="h-10 w-10 border-2 border-[#7e22ce]">
             <AvatarImage src="" />
             <AvatarFallback className="bg-[#7e22ce] text-white font-bold"></AvatarFallback>

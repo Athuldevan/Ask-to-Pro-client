@@ -15,16 +15,22 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/user/dashboard" element={<Dashboard />}>
+
+          <Route path="/user/dashboard" element={<Dashboard role="student" />}>
             <Route path="profile" element={<Profile />} />
             <Route path="mybookings" element={<MyBookingsPage />} />
             <Route path="mentors" element={<FindMentorsPage />} />
             <Route path="mentors/:id" element={<MentorDetailsPage />} />
           </Route>
-          <Route
-            path="/mentor/dashboard"
-            element={<p>Mentor Dashbaior d Page Goes Here </p>}
-          />
+
+          <Route path="/mentor/dashboard" element={<Dashboard role="mentor" />}>
+            <Route index element={<div className="p-4 text-center text-lg text-muted-foreground">Mentor Dashboard - Coming Soon</div>} />
+            {/* Placeholder routes for now */}
+            <Route path="sessions" element={<div>My Sessions</div>} />
+            <Route path="messages" element={<div>Messages</div>} />
+            <Route path="profile" element={<div>Profile</div>} />
+            <Route path="settings" element={<div>Settings</div>} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

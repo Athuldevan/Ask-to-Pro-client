@@ -5,26 +5,19 @@ import { cn } from "@/lib/utils";
 import {
   ChevronsLeft,
   ChevronsRight,
-  Home,
-  Calendar,
-  MessageCircle,
-  Settings,
-  icons,
 } from "lucide-react";
 import { useLogoutMutation } from "@/lib/slices/authApi";
 
-export default function Sidebar() {
+import type { SidebarLink } from "@/lib/dashboardConfig";
+
+interface SidebarProps {
+  links: SidebarLink[];
+}
+
+export default function Sidebar({ links }: SidebarProps) {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [logout] = useLogoutMutation();
-
-  const sidebarLinks = [
-    { label: "FindMentors", href: "/user/dashboard/mentors", icon: Home },
-    { label: "My Bookings", href: "mybookings", icon: Calendar },
-    { label: "Messages", href: "/messages", icon: MessageCircle },
-    { label: "Settings", href: "/setting", icon: Settings },
-    { label: "Logout", href: "/", icon: icons.LogOut },
-  ];
 
   function handleLogout() {
     logout();
@@ -60,15 +53,15 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <div className="flex flex-col space-y-2 mt-4 px-3">
-        {sidebarLinks.map((item) => {
-          const active = location.pathname === item.href;
+        {links.map((item) => {
+          const active = location.pathname === item.href || location.pathname.endsWith(item.href);
           const Icon = item.icon;
 
           return (
             <Link key={item.href} to={item.href}>
               <Button
                 onClick={() =>
-                  item.label === "logout" ? handleLogout : undefined
+                  item.label === "Logout" ? handleLogout : undefined
                 }
                 variant="ghost"
                 className={cn(
@@ -76,7 +69,7 @@ export default function Sidebar() {
                   "text-gray-700 dark:text-gray-300 hover:bg-[#f3e8ff] hover:text-[#7e22ce]",
                   "dark:hover:bg-gray-800 dark:hover:text-[#b983ff]",
                   active &&
-                    "bg-[#7e22ce] text-white hover:bg-[#6c1fa5] dark:bg-[#7e22ce] dark:text-white",
+                  "bg-[#7e22ce] text-white hover:bg-[#6c1fa5] dark:bg-[#7e22ce] dark:text-white",
                   collapsed && "justify-center"
                 )}
               >
