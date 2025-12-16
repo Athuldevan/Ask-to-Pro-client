@@ -1,17 +1,34 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  useGetAllMentorsQuery,
-  type Mentor,
-} from "../../lib/slices/mentorApi";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Badge } from "lucide-react";
+import { useNavigate } from "react-router";
+import { useGetAllMentorsQuery, type Mentor } from "../../lib/slices/mentorApi";
+// Correct Avatar imports for shadcn/ui pattern
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// Correct Badge import from your components directory
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Star } from "lucide-react"; // Import Star icon for rating
+
+// --- Utility function to get initials safely ---
+const getInitials = (mentor: Mentor) => {
+  const name = mentor.userName || mentor.userEmail;
+  if (!name) return "M";
+
+  const parts = name.split(' ');
+  if (parts.length > 1) {
+    // Use first letter of first and last name part
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  // Use first letter of the name/email prefix
+  return name.charAt(0).toUpperCase();
+};
 
 export default function FindMentorsPage() {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useGetAllMentorsQuery();
 
   const mentors = data?.mentors ?? [];
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -45,94 +62,131 @@ export default function FindMentorsPage() {
 
       {/* Mentor Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mentors?.map((mentor: Mentor) => (
-          <Card
-            key={mentor._id}
-            className="border border-border bg-background hover:shadow-lg transition"
-          >
-            <CardContent className="p-6 space-y-4">
-              {/* Avatar + Name + Category */}
-              <div className="flex items-center justify-between gap-4">
-                {/* Avatar */}
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={mentor.image} />
-                  <AvatarFallback>
-                    {(mentor.name || mentor.jobTitle || "M")?.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+        {mentors?.map((mentor: Mentor) => {
+          // Determine the name to display
+          const displayName = mentor.userName || mentor.userEmail?.split('@')[0] || mentor.jobTitle || "Mentor";
 
-                {/* Name + Company / Role */}
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg leading-tight">
-                    {mentor.name || mentor.jobTitle || "Mentor"}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {mentor.company
-                      ? `${mentor.company} • ${mentor.jobTitle || "Mentor"}`
-                      : mentor.jobTitle || "Industry Mentor"}
+          return (
+            <Card
+              key={mentor._id}
+              className="border border-border bg-background hover:shadow-lg transition"
+            >
+              <CardContent className="p-6 space-y-4">
+
+                {/* 1. Avatar + Name + Category */}
+                <div className="flex items-start justify-between gap-4">
+                  {/* Avatar */}
+                  <Avatar className="h-14 w-14 flex-shrink-0" style={{ backgroundColor: "#7e22ce" }}>
+                    <AvatarImage src={mentor.userAvatar} />
+                    <AvatarFallback className="text-xl font-bold text-white bg-[#7e22ce]">
+                      {getInitials(mentor)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  {/* Name + Job/Company */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-lg leading-tight truncate">
+                      {displayName}
+                    </h3>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {mentor.jobTitle && mentor.company
+                        ? `${mentor.jobTitle} @ ${mentor.company}`
+                        : mentor.jobTitle || mentor.company || "Industry Mentor"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {mentor.category}
+                    </p>
+                  </div>
+
+                  {/* Category Pill (Moved for better layout) 
+                      Removed the pill here to use the category line below the name
+                      and kept the logic simple.
+                  */}
+                </div>
+
+                {/* 2. Bio */}
+                {mentor.bio && (
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {mentor.bio}
                   </p>
+                )}
+
+                {/* 3. Skills */}
+                <div className="flex flex-wrap gap-2">
+                  {mentor.skills?.slice(0, 3).map((skill: string) => (
+                    // Using your specified color theme for the skill badges
+                    <Badge
+                      key={skill}
+                      className="bg-[#7e22ce]/10 text-[#7e22ce] dark:bg-[#7e22ce]/30 dark:text-white"
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                  {mentor.skills && mentor.skills.length > 3 && (
+                    <Badge
+                      className="bg-muted text-muted-foreground"
+                    >
+                      +{mentor.skills.length - 3} more
+                    </Badge>
+                  )}
                 </div>
 
-                {/* Category pill */}
-                {mentor.category && (
-                  <span className="inline-flex items-center rounded-full bg-[#5b21b6] px-3 py-1 text-xs font-medium text-white whitespace-nowrap">
-                    {mentor.category}
-                  </span>
-                )}
-              </div>
-
-              {/* Bio */}
-              {mentor.bio && (
-                <p className="text-sm text-muted-foreground line-clamp-3">
-                  {mentor.bio}
-                </p>
-              )}
-
-              {/* Skills */}
-              <div className="flex flex-wrap gap-2">
-                {mentor.skills?.slice(0, 3).map((skill: string) => (
-                  <Badge
-                    key={skill}
-                    className="bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
-                  >
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Meta */}
-              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                <span>Experience: {mentor.experience ?? 0} yrs</span>
-                <span>Rating: {mentor.avgRating ?? 0} ⭐</span>
-                <span>Sessions: {mentor.totalSessions ?? 0}</span>
-              </div>
-
-              {/* Pricing */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">Price / session</p>
-                  <p className="text-lg font-semibold">${mentor.price ?? 0}</p>
+                {/* 4. Meta (Experience, Rating, Sessions, Education) */}
+                <div className="grid grid-cols-2 gap-y-2 text-sm">
+                  <div className="flex items-center gap-1">
+                    <span className="text-muted-foreground">Exp:</span>
+                    <span className="font-medium">{mentor.experience ?? 0} yrs</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-muted-foreground">Rating:</span>
+                    <div className="flex items-center">
+                      <Star className="w-3 h-3 fill-yellow-500 text-yellow-500 mr-1" />
+                      <span className="font-medium">{mentor.avgRating?.toFixed(1) ?? 'N/A'}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-muted-foreground">Sessions:</span>
+                    <span className="font-medium">{mentor.totalSessions ?? 0}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-muted-foreground">Edu:</span>
+                    <span className="font-medium truncate">{mentor.education || 'N/A'}</span>
+                  </div>
                 </div>
 
-                {mentor.githubUrl && (
-                  <a
-                    className="text-sm text-[#7e22ce] hover:underline"
-                    href={mentor.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    GitHub
-                  </a>
-                )}
-              </div>
+                {/* 5. Pricing and CTA */}
+                <div className="flex items-center justify-between pt-2">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Price / hr</p>
+                    {/* Using your specific color for the price */}
+                    <p className="text-xl font-bold text-[#7e22ce]">${mentor.price ?? 0}</p>
+                  </div>
 
-              {/* CTA */}
-              <Button className="w-full bg-[#7e22ce] hover:bg-[#6c1fa5] text-white">
-                View Profile
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+                  <div className="flex items-center space-x-3">
+                    {mentor.githubUrl && (
+                      <a
+                        className="text-sm text-[#7e22ce] hover:underline whitespace-nowrap"
+                        href={mentor.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        GitHub Profile
+                      </a>
+                    )}
+
+                    {/* CTA Button */}
+                    <Button
+                      className="w-auto px-4 bg-[#7e22ce] hover:bg-[#6c1fa5] text-white"
+                      onClick={() => navigate(`/user/dashboard/mentors/${mentor._id}`)}
+                    >
+                      View Profile
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </section>
   );

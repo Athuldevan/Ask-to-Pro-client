@@ -1,7 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQueryWithReauth } from "../api/customBaseQuery";
 
-// Basic mentor shape returned by the API; extend if backend adds more fields
 export type Mentor = {
   _id: string;
   name?: string;
@@ -16,11 +15,20 @@ export type Mentor = {
   price?: number;
   image?: string;
   githubUrl?: string;
+  userName: string;
+  userEmail: string;
+  userAvatar: string;
+  education: string;
 };
 
 export type GetAllMentorsResponse = {
   status: string;
   mentors: Mentor[];
+};
+
+export type GetMentorByIdResponse = {
+  status: string;
+  mentor: Mentor;
 };
 
 export const mentorApi = createApi({
@@ -34,7 +42,13 @@ export const mentorApi = createApi({
         method: "GET",
       }),
     }),
+    getMentorById: builder.query<GetMentorByIdResponse, string>({
+      query: (id) => ({
+        url: `/getMentor/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllMentorsQuery } = mentorApi;
+export const { useGetAllMentorsQuery, useGetMentorByIdQuery } = mentorApi;

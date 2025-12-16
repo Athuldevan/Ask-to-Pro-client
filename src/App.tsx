@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/profile";
 import MyBookingsPage from "./pages/bookings";
 import FindMentorsPage from "./pages/findMentors";
+import MentorDetailsPage from "./pages/MentorDetails";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="mybookings" element={<MyBookingsPage />} />
             <Route path="mentors" element={<FindMentorsPage />} />
+            <Route path="mentors/:id" element={<MentorDetailsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
