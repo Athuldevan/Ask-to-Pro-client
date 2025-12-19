@@ -24,13 +24,25 @@ export default function App() {
           </Route>
 
           <Route path="/mentor/dashboard" element={<Dashboard role="mentor" />}>
-            <Route index element={<div className="p-4 text-center text-lg text-muted-foreground">Mentor Dashboard - Coming Soon</div>} />
+            <Route
+              index
+              element={
+                <div className="p-4 text-center text-lg text-muted-foreground">
+                  Mentor Dashboard - Coming Soon
+                </div>
+              }
+            />
             {/* Placeholder routes for now */}
             <Route path="sessions" element={<div>My Sessions</div>} />
             <Route path="messages" element={<div>Messages</div>} />
             <Route path="profile" element={<div>Profile</div>} />
             <Route path="settings" element={<div>Settings</div>} />
           </Route>
+
+          <Route
+            path="/admin/dashboard"
+            element={<Dashboard role="admin" />}
+          ></Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

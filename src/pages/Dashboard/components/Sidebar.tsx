@@ -53,7 +53,7 @@ export default function Sidebar({ links }: SidebarProps) {
 
       {/* Navigation */}
       <div className="flex flex-col space-y-2 mt-4 px-3">
-        {links.map((item) => {
+        {links?.map((item) => {
           const active = location.pathname === item.href || location.pathname.endsWith(item.href);
           const Icon = item.icon;
 
