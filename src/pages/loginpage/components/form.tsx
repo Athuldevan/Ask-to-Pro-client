@@ -18,37 +18,39 @@ export default function Login() {
 
   const dispatch = useDispatch();
 
-  const handleLogin = async function (e: Event) {
-    e.preventDefault();
-    try {
-      const data = await login({ email, password }).unwrap();
-      console.log(data);
-      dispatch(
-        setCredentials({ accessToken: data.accessToken, user: data.user })
-      );
-      const role = data.user?.role;
-      switch (role) {
-        case "user":
-          navigate("/user/dashboard");
-          break;
-        case "mentor":
-          navigate("/mentor/dashboard");
-          break;
-        case "admin":
-          navigate("/admin/dashboard");
-          break;
-        default:
-          navigate("/profile");
-          break;
-      }
-    } catch (error) {
-      console.log(error);
-      console.error(
-        "Login Failed-----------",
-        error?.data?.message || "Something went wrong!"
-      );
+  const handleLogin = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
+
+  try {
+    const data = await login({ email, password }).unwrap();
+
+    dispatch(
+      setCredentials({
+        accessToken: data.accessToken,
+        user: data.user,
+      })
+    );
+
+    switch (data.user?.role) {
+      case "user":
+        navigate("/user/dashboard");
+        break;
+      case "mentor":
+        navigate("/mentor/dashboard");
+        break;
+      case "admin":
+        navigate("/admin/dashboard");
+        break;
+      default:
+        navigate("/profile");
     }
-  };
+  } catch (err: any) {
+    console.error("Login failed:", err?.data?.message || err);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex">

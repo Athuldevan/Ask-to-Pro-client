@@ -1,5 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { createBaseQueryWithReauth } from "../api/customBaseQuery";
+import {
+  baseQueryWithReauth,
+} from "../api/customBaseQuery";
 
 export type Mentor = {
   _id: string;
@@ -34,17 +36,17 @@ export type GetMentorByIdResponse = {
 export const mentorApi = createApi({
   reducerPath: "mentorApi",
   tagTypes: ["Mentor"],
-  baseQuery: createBaseQueryWithReauth(import.meta.env.VITE_MENTOR_SERVICE_URL),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getAllMentors: builder.query<GetAllMentorsResponse, void>({
       query: () => ({
-        url: "/getAllMentors",
+        url: "/mentor/getAllMentors",
         method: "GET",
       }),
     }),
     getMentorById: builder.query<GetMentorByIdResponse, string>({
       query: (id) => ({
-        url: `/getMentor/${id}`,
+        url: `/mentor/getMentor/${id}`,
         method: "GET",
       }),
     }),
