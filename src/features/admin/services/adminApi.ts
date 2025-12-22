@@ -28,7 +28,7 @@ export const adminApi = createApi({
     }),
     rejectMentor: builder.mutation<{ status: string }, string>({
       query: (id) => ({
-        url: `/admin/mentor/${id}/reject`,
+        url: `/admin/mentors/${id}/reject`,
         method: "PATCH",
       }),
       invalidatesTags: ["PendingMentors"],
