@@ -26,7 +26,7 @@ export default function GetPendingMentors() {
   const [approveMentor, { isLoading: isApproving }] = useApproveMentorMutation();
   const [rejectMentor, { isLoading: isRejecting }] = useRejectMentorMutation();
 
-  console.log("Admin API Data:", data);
+ 
 
   let mentors: Mentor[] = [];
   if (data?.mentors) {

@@ -21,14 +21,14 @@ export const adminApi = createApi({
     }),
     approveMentor: builder.mutation<{ status: string }, string>({
       query: (id) => ({
-        url: `/admin/mentor/approve/${id}`,
+        url: `/admin/mentors/${id}/approve`,
         method: "PATCH",
       }),
       invalidatesTags: ["PendingMentors"],
     }),
     rejectMentor: builder.mutation<{ status: string }, string>({
       query: (id) => ({
-        url: `/admin/mentor/reject/${id}`,
+        url: `/admin/mentor/${id}/reject`,
         method: "PATCH",
       }),
       invalidatesTags: ["PendingMentors"],
@@ -39,5 +39,5 @@ export const adminApi = createApi({
 export const {
   useGetAllPendingMentorsQuery,
   useApproveMentorMutation,
-  useRejectMentorMutation
+  useRejectMentorMutation,
 } = adminApi;
