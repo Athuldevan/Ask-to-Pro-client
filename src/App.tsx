@@ -7,6 +7,7 @@ import Profile from "./pages/profile";
 import MyBookingsPage from "./pages/bookings";
 import FindMentorsPage from "./pages/findMentors";
 import MentorDetailsPage from "./pages/MentorDetails";
+import GetPendingMentors from "./features/admin/pages/PendingMentorsPage";
 
 export default function App() {
   return (
@@ -39,10 +40,9 @@ export default function App() {
             <Route path="settings" element={<div>Settings</div>} />
           </Route>
 
-          <Route
-            path="/admin/dashboard"
-            element={<Dashboard role="admin" />}
-          ></Route>
+          <Route path="/admin/dashboard" element={<Dashboard role="admin" />}>
+            <Route path="pending/mentors" element={<GetPendingMentors />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

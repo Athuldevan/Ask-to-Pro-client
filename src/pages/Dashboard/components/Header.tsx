@@ -5,7 +5,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Link } from "react-router";
 
 interface HeaderProps {
-  role: "student" | "mentor" | "admin";
+  role: "user" | "mentor" | "admin";
 }
 
 export default function Header({ role }: HeaderProps) {

@@ -32,7 +32,11 @@ export const MENTOR_LINKS: SidebarLink[] = [
 ];
 
 export const ADMIN_LINKS: SidebarLink[] = [
-  { label: "Mentors", href: "/admin/dashboard", icon: LayoutDashboard },
-  { label: "settings", href: "/admin/dashboard", icon: LayoutDashboard },
-  { label: "users", href: "/admin/dashboard", icon: LayoutDashboard },
+  {
+    label: "Mentors",
+    href: "/admin/dashboard/pending/mentors",
+    icon: LayoutDashboard,
+  },
+  { label: "settings", href: "settings", icon: LayoutDashboard },
+  { label: "users", href: "users", icon: LayoutDashboard },
 ];
