@@ -39,4 +39,5 @@ export const ADMIN_LINKS: SidebarLink[] = [
   },
   { label: "settings", href: "settings", icon: LayoutDashboard },
   { label: "users", href: "users", icon: LayoutDashboard },
+  { label: "Logout", href: "/", icon: LogOut },
 ];
