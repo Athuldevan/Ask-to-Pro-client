@@ -28,14 +28,28 @@ export const authApi = createApi({
       }),
     }),
 
+    verifyOtp: builder.mutation({
+      query: (enteredOtp) => ({
+        url: "/auth/verify",
+        method: "POST",
+        body: enteredOtp,
+      }),
+    }),
+
     viewProfile: builder.query({
       query: () => ({
         url: "/auth/me",
         method: "GET",
+        providesTags: ["Profile"],
       }),
     }),
   }),
 });
 
-export const { useLoginMutation, useViewProfileQuery, useLogoutMutation, useRegisterMutation } =
-  authApi;
+export const {
+  useLoginMutation,
+  useViewProfileQuery,
+  useLogoutMutation,
+  useRegisterMutation,
+  useVerifyOtpMutation,
+} = authApi;
