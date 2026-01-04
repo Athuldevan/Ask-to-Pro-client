@@ -8,182 +8,202 @@ import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "@/lib/slices/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/lib/slices/authSlice";
+import { useLazyGetMentorProfileQuery } from "@/lib/slices/mentorApi";
 
 export default function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [rememberMe] = useState(false);
-    const navigate = useNavigate();
-    const [login, { isLoading }] = useLoginMutation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe] = useState(false);
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const [getMentorProfile] = useLazyGetMentorProfileQuery();
+  //   const [createMentorProfile] = useCreateMentorProfileMutation();
 
-    const handleLogin = async (
-        e: React.FormEvent<HTMLFormElement>
-    ) => {
-        e.preventDefault();
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
+    try {
+      const data = await login({ email, password }).unwrap();
+
+      dispatch(
+        setCredentials({
+          accessToken: data.accessToken,
+          user: data.user,
+        })
+      );
+
+      const role = data.user?.role;
+
+      if (role === "mentor") {
         try {
-            const data = await login({ email, password }).unwrap();
-
-            dispatch(
-                setCredentials({
-                    accessToken: data.accessToken,
-                    user: data.user,
-                })
-            );
-
-            switch (data.user?.role) {
-                case "user":
-                    navigate("/user/dashboard");
-                    break;
-                case "mentor":
-                    navigate("/mentor/dashboard");
-                    break;
-                case "admin":
-                    navigate("/admin/dashboard");
-                    break;
-                default:
-                    navigate("/profile");
-            }
+          await getMentorProfile().unwrap();
+          navigate("/mentor/dashboard");
         } catch (err: any) {
-            console.error("Login failed:", err?.data?.message || err);
+          const status = err?.status ?? err?.originalStatus;
+
+          if (status === 404) {
+            navigate("/mentor/createProfile");
+          } else {
+            console.error("Failed to fetch mentor profile:", err);
+            // Optionally show a toast here for "Profile fetch failed"
+            // But we do not rethrow, so we don't trigger "Login failed"
+          }
         }
-    };
+        return;
+      }
+
+      if (role === "user") {
+        navigate("/user/dashboard");
+        return;
+      }
+
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+        return;
+      }
+
+      // fallback
+      navigate("/");
+    } catch (err: any) {
+      console.error("Login failed:", err?.data?.message || err);
+    }
+  };
 
 
-    return (
-        <div className="min-h-screen flex">
-            <BrandSidebar />
+  return (
+    <div className="min-h-screen flex">
+      <BrandSidebar />
 
-            {/* Right Section (Login Form) - Takes half the screen */}
-            <div className="flex-1 flex items-center justify-center p-12 bg-white">
-                <Card className="w-full max-w-md border-none shadow-none bg-transparent">
-                    <CardContent className="p-0">
-                        <h2 className="text-4xl font-bold mb-10 text-gray-800 text-center md:text-left">
-                            Sign In
-                        </h2>
+      {/* Right Section (Login Form) - Takes half the screen */}
+      <div className="flex-1 flex items-center justify-center p-12 bg-white">
+        <Card className="w-full max-w-md border-none shadow-none bg-transparent">
+          <CardContent className="p-0">
+            <h2 className="text-4xl font-bold mb-10 text-gray-800 text-center md:text-left">
+              Sign In
+            </h2>
 
-                        <form onSubmit={(e) => handleLogin(e)} className="space-y-6">
-                            {/* Username or Email Input */}
-                            <div>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="Username or Email Address"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="py-6 px-4 text-base rounded-lg border-gray-300 focus:border-[#7e22ce]"
-                                    required
-                                />
-                            </div>
+            <form onSubmit={(e) => handleLogin(e)} className="space-y-6">
+              {/* Username or Email Input */}
+              <div>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Username or Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="py-6 px-4 text-base rounded-lg border-gray-300 focus:border-[#7e22ce]"
+                  required
+                />
+              </div>
 
-                            {/* Password Input */}
-                            <div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="py-6 px-4 text-base rounded-lg border-gray-300 focus:border-[#7e22ce]"
-                                    required
-                                />
-                            </div>
+              {/* Password Input */}
+              <div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="py-6 px-4 text-base rounded-lg border-gray-300 focus:border-[#7e22ce]"
+                  required
+                />
+              </div>
 
-                            {/* Remember Me and Forgot Password */}
-                            <div className="flex justify-between items-center text-sm">
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="remember"
-                                        checked={rememberMe}
-                                        // onCheckedChange={setRememberMe}
-                                        className="border-gray-400 data-[state=checked]:bg-[#7e22ce] data-[state=checked]:text-white"
-                                    />
-                                    <label
-                                        htmlFor="remember"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-600"
-                                    >
-                                        Remember me
-                                    </label>
-                                </div>
-                                <a
-                                    href="/forgot-password"
-                                    className="text-sm text-purple-700 hover:text-purple-900"
-                                >
-                                    Forgot password?
-                                </a>
-                            </div>
+              {/* Remember Me and Forgot Password */}
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    // onCheckedChange={setRememberMe}
+                    className="border-gray-400 data-[state=checked]:bg-[#7e22ce] data-[state=checked]:text-white"
+                  />
+                  <label
+                    htmlFor="remember"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-600"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <a
+                  href="/forgot-password"
+                  className="text-sm text-purple-700 hover:text-purple-900"
+                >
+                  Forgot password?
+                </a>
+              </div>
 
-                            {/* Sign In Button */}
-                            <Button
-                                type="submit"
-                                variant="link"
-                                className="w-full py-3 h-auto bg-[#7e22ce] hover:bg-[#6c1fa5] text-white text-lg rounded-lg shadow-lg transition duration-200"
-                            >
-                                Sign In <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-                        </form>
+              {/* Sign In Button */}
+              <Button
+                type="submit"
+                variant="link"
+                className="w-full py-3 h-auto bg-[#7e22ce] hover:bg-[#6c1fa5] text-white text-lg rounded-lg shadow-lg transition duration-200"
+              >
+                Sign In <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </form>
 
-                        {/* OR Separator */}
-                        <div className="flex items-center my-6">
-                            <div className="grow border-t border-gray-300"></div>
-                            <span className="shrink mx-4 text-gray-500 text-sm">Or</span>
-                            <div className="grow border-t border-gray-300"></div>
-                        </div>
-
-                        {/* Sign In with Google Button */}
-                        <Button
-                            disabled={isLoading}
-                            variant="outline"
-                            className="w-full py-3 h-auto text-base text-gray-700 border-gray-300 hover:bg-gray-50 rounded-lg flex items-center justify-center"
-                            onClick={() => console.log("Sign in with Google")}
-                        >
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_Google_2020_Vector.svg"
-                                alt="Google logo"
-                                className="w-5 h-5 mr-3"
-                            />
-                            Sign in with Google
-                        </Button>
-
-                        {/* Don't have an account link */}
-                        <p className="mt-8 text-center text-gray-600">
-                            Don't have an account?{" "}
-                            <Link
-                                to="/register"
-                                className="text-purple-700 font-medium hover:text-purple-900"
-                            >
-                                Sign up
-                            </Link>
-                        </p>
-                    </CardContent>
-                </Card>
+            {/* OR Separator */}
+            <div className="flex items-center my-6">
+              <div className="grow border-t border-gray-300"></div>
+              <span className="shrink mx-4 text-gray-500 text-sm">Or</span>
+              <div className="grow border-t border-gray-300"></div>
             </div>
-        </div>
-    );
+
+            {/* Sign In with Google Button */}
+            <Button
+              disabled={isLoading}
+              variant="outline"
+              className="w-full py-3 h-auto text-base text-gray-700 border-gray-300 hover:bg-gray-50 rounded-lg flex items-center justify-center"
+              onClick={() => console.log("Sign in with Google")}
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_Google_2020_Vector.svg"
+                alt="Google logo"
+                className="w-5 h-5 mr-3"
+              />
+              Sign in with Google
+            </Button>
+
+            {/* Don't have an account link */}
+            <p className="mt-8 text-center text-gray-600">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-purple-700 font-medium hover:text-purple-900"
+              >
+                Sign up
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }
 
 const BrandSidebar = () => (
-    <div className="flex-1 bg-purple-50 p-12 flex flex-col justify-between">
-        <div className="text-5xl font-extrabold text-[#7e22ce] tracking-tight">
-            Ask to Pro
-        </div>
-
-        <div className="mb-24">
-            <h1 className="text-2xl font-semibold text-gray-800 leading-snug">
-                <br />
-                Connect With experienced Proffesionals
-                <br />
-                Get 1-on-1 guidance from industry mentors
-            </h1>
-        </div>
-
-        <div className="flex items-center text-purple-700 cursor-pointer hover:text-purple-900">
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            <Link to="/">
-                <span className="text-sm">Back</span>
-            </Link>
-        </div>
+  <div className="flex-1 bg-purple-50 p-12 flex flex-col justify-between">
+    <div className="text-5xl font-extrabold text-[#7e22ce] tracking-tight">
+      Ask to Pro
     </div>
+
+    <div className="mb-24">
+      <h1 className="text-2xl font-semibold text-gray-800 leading-snug">
+        <br />
+        Connect With experienced Proffesionals
+        <br />
+        Get 1-on-1 guidance from industry mentors
+      </h1>
+    </div>
+
+    <div className="flex items-center text-purple-700 cursor-pointer hover:text-purple-900">
+      <ChevronLeft className="w-4 h-4 mr-1" />
+      <Link to="/">
+        <span className="text-sm">Back</span>
+      </Link>
+    </div>
+  </div>
 );

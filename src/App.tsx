@@ -21,6 +21,7 @@ import MentorDashboardPage from "./features/mentor/pages/MentorDashboardPage";
 import MentorSessionPage from "./features/mentor/pages/MentorSessionPage";
 import Otp from "./features/auth/pages/Otp";
 import RegisterForm from "./features/auth/components/RegisterForm";
+import CreateMentorProfile from "./features/mentor/components/CreateMentorProfile";
 
 export default function App() {
   return (
@@ -47,6 +48,7 @@ export default function App() {
           </Route>
           {/* ********************************* */}
           {/* Mentor Routes */}
+          <Route path="/mentor/createProfile" element={<CreateMentorProfile />} />
           <Route
             path="/mentor/dashboard"
             element={<DashboardLayout role="mentor" />}

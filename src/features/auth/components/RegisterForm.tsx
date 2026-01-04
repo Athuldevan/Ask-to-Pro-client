@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useRegisterMutation } from "@/lib/slices/authApi";
 
 export default function RegisterForm() {
-  const [role, setRole] = useState<"student" | "mentor">("student");
+  const [role, setRole] = useState<"user" | "mentor">("user");
   console.log(role);
   const [formData, setFormData] = useState({
     name: "",
@@ -24,8 +24,8 @@ export default function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await register(formData).unwrap();
-      navigate("verify-otp", { state: {email : formData.email} });
+      await register({ ...formData, role }).unwrap();
+      navigate("verify-otp", { state: { email: formData.email } });
     } catch (err) {
       console.error("Registration failed:", err);
     }
@@ -50,12 +50,13 @@ export default function RegisterForm() {
 
             {/* Role Selection */}
             <div className="grid grid-cols-2 gap-4 mb-8">
+              {/* Student Buutton */}
               <button
                 type="button"
-                onClick={() => setRole("student")}
+                onClick={() => setRole("user")}
                 className={cn(
                   "flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200",
-                  role === "student"
+                  role === "user"
                     ? "border-[#7e22ce] bg-purple-50 text-[#7e22ce]"
                     : "border-gray-200 bg-transparent text-gray-500 hover:border-gray-300"
                 )}
@@ -63,11 +64,13 @@ export default function RegisterForm() {
                 <GraduationCap
                   className={cn(
                     "w-8 h-8 mb-2",
-                    role === "student" ? "text-[#7e22ce]" : "text-gray-400"
+                    role === "user" ? "text-[#7e22ce]" : "text-gray-400"
                   )}
                 />
                 <span className="font-semibold">Student</span>
               </button>
+
+              {/* Mentor Button */}
               <button
                 type="button"
                 onClick={() => setRole("mentor")}

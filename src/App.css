@@ -4,6 +4,9 @@
 
 @import "tailwindcss";
 @import "tw-animate-css";
+/* import "react-tag-input/react-tag-input.css"; */
+
+
 
 @custom-variant dark (&:is(.dark *));
 

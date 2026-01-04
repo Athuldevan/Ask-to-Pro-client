@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import RegisterForm, { BrandSidebar } from "../components/RegisterForm";
+import { BrandSidebar } from "../components/RegisterForm";
 
 export default function RegisterPage() {
   return (
