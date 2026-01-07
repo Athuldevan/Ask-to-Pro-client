@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "../api/customBaseQuery";
+import type { IMentor } from "@/constants/mentor";
 
 export type Mentor = {
   _id: string;
@@ -19,16 +20,17 @@ export type Mentor = {
   userEmail: string;
   userAvatar: string;
   education: string;
+  verificationStatus: string;
 };
 
 export type GetAllMentorsResponse = {
   status: string;
-  mentors: Mentor[];
+  mentors: IMentor[];
 };
 
 export interface GetMentorResponse {
   status: string;
-  mentor: Mentor;
+  mentor: IMentor;
 }
 
 export const mentorApi = createApi({
@@ -42,20 +44,20 @@ export const mentorApi = createApi({
         method: "GET",
       }),
     }),
-    getMentorById: builder.query<Mentor, string>({
+    getMentorById: builder.query<IMentor, string>({
       query: (id) => ({
         url: `/mentor/getMentor/${id}`,
         method: "GET",
       }),
     }),
 
-    // Get Mentor Profile
-    getMentorProfile: builder.query<GetMentorResponse, void>({
-      query: () => ({
-        url: "/mentor/profile",
-        method: "GET",
+      // Get Mentor Profile
+      getMentorProfile: builder.query<GetMentorResponse, void>({
+        query: () => ({
+          url: "/mentor/profile",
+          method: "GET",
+        }),
       }),
-    }),
 
     // Create Mentor Profile
     createMentorProfile: builder.mutation({
@@ -71,6 +73,7 @@ export const mentorApi = createApi({
 export const {
   useGetAllMentorsQuery,
   useGetMentorByIdQuery,
+  useGetMentorProfileQuery,
   useLazyGetMentorProfileQuery,
   useCreateMentorProfileMutation,
 } = mentorApi;

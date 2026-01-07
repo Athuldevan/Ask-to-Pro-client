@@ -22,6 +22,7 @@ import MentorSessionPage from "./features/mentor/pages/MentorSessionPage";
 import Otp from "./features/auth/pages/Otp";
 import RegisterForm from "./features/auth/components/RegisterForm";
 import CreateMentorProfile from "./features/mentor/components/CreateMentorProfile";
+import MentorProfilePage from "./features/mentor/pages/MentorProfile";
 
 export default function App() {
   return (
@@ -57,7 +58,7 @@ export default function App() {
 
             <Route path="sessions" element={<MentorSessionPage />} />
             <Route path="messages" element={<div>Messages</div>} />
-            <Route path="profile" element={<div>Profile</div>} />
+            <Route path="profile" element={<MentorProfilePage/>} />
             <Route path="settings" element={<div>Settings</div>} />
           </Route>
           {/* ********************************* */}
