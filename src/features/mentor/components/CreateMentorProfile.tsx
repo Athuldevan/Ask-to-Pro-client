@@ -78,16 +78,16 @@ export default function CreateMentorProfile() {
       currency: "INR",
     },
   });
-  // handle Submit Form
+  
   async function onSubmit(values: MentorProfileForm) {
     // console.log('Navigate to dashboar')
     await createMentorProfile(values)
       .unwrap()
       .then(() => navigate("/mentor/dashboard"));
-    // navigate("/mentor/dashboard");
+   
   }
 
-  // --- Helpers for Skills Input ---
+
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     field: any
@@ -115,7 +115,7 @@ export default function CreateMentorProfile() {
     }
   };
 
-  // Remve Skill
+  // Remove Skill
   const removeSkill = (skillToRemove: string, field: any) => {
     field.onChange(
       field.value.filter((skill: string) => skill !== skillToRemove)
@@ -330,7 +330,7 @@ export default function CreateMentorProfile() {
                               </Button>
                             </div>
 
-                            <div className="flex flex-wrap gap-2 min-h-[2.5rem] p-4 bg-muted/20 rounded-md border border-dashed">
+                            <div className="flex flex-wrap gap-2 min-h-10 p-4 bg-muted/20 rounded-md border border-dashed">
                               {field.value.length === 0 && (
                                 <span className="text-muted-foreground text-sm italic">
                                   No skills added yet.

@@ -6,7 +6,7 @@ export enum VerificationStatus {
 export interface IMentor {
   userName: string;
   userEmail: string;
-  usetAvatar: string;
+  userAvatar: string;
   skills: string[];
   isVerified: boolean;
   verificationStatus: VerificationStatus;

@@ -68,7 +68,7 @@ export default function DashboardLayout({
 }
 
 // eslint-disable
-export function AppSidebar({ links }) {
+export function AppSidebar({ links }: { links: Array<{ title: string; url: string; icon: React.ComponentType }> }) {
   return (
     //eslint-disbale-next-line
     <Sidebar variant="floating" collapsible="icon">
