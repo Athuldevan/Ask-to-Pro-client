@@ -4,6 +4,7 @@ import { baseQueryWithReauth } from "../api/customBaseQuery";
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQueryWithReauth,
+  tagTypes: ["Profile"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
@@ -40,8 +41,16 @@ export const authApi = createApi({
       query: () => ({
         url: "/auth/me",
         method: "GET",
-        providesTags: ["Profile"],
       }),
+      providesTags: ["Profile"],
+    }),
+    editProfile: builder.mutation({
+      query: (data) => ({
+        url: "/auth/profile/edit",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Profile"],
     }),
   }),
 });
@@ -52,4 +61,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useVerifyOtpMutation,
+  useEditProfileMutation,
 } = authApi;

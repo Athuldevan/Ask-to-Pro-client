@@ -51,13 +51,22 @@ export const mentorApi = createApi({
       }),
     }),
 
-      // Get Mentor Profile
-      getMentorProfile: builder.query<GetMentorResponse, void>({
-        query: () => ({
-          url: "/mentor/profile",
-          method: "GET",
-        }),
+    // Get Mentor Profile
+    getMentorProfile: builder.query<GetMentorResponse, void>({
+      query: () => ({
+        url: "/mentor/profile",
+        method: "GET",
       }),
+      providesTags: ["Mentor"],
+    }),
+    editProfile: builder.mutation({
+      query: (data) => ({
+        url: "/auth/profile/edit",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Mentor"],
+    }),
 
     // Create Mentor Profile
     createMentorProfile: builder.mutation({
@@ -76,4 +85,5 @@ export const {
   useGetMentorProfileQuery,
   useLazyGetMentorProfileQuery,
   useCreateMentorProfileMutation,
+  useEditProfileMutation,
 } = mentorApi;

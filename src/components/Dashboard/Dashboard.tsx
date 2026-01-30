@@ -22,8 +22,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-
-
 interface DashboardLayoutProps {
   children: React.ReactNode;
   pageTitle: string;
@@ -39,7 +37,6 @@ export default function DashboardLayout({
       {/* <AppSidebar/> */}
 
       <SidebarInset>
-        {/* Header / Topbar */}
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
@@ -68,9 +65,12 @@ export default function DashboardLayout({
 }
 
 // eslint-disable
-export function AppSidebar({ links }: { links: Array<{ title: string; url: string; icon: React.ComponentType }> }) {
+export function AppSidebar({
+  links,
+}: {
+  links: Array<{ title: string; url: string; icon: React.ComponentType }>;
+}) {
   return (
-    //eslint-disbale-next-line
     <Sidebar variant="floating" collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
