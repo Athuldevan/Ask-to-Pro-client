@@ -24,7 +24,10 @@ interface SendOtpResponse {
 
 export const authApi = createApi({
   reducerPath: "api/authAPi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BASE_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_API_BASE_URL,
+    credentials: "include",
+  }),
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials: LoginRequest) => ({
