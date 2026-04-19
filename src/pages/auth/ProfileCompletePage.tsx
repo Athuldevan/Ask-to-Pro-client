@@ -34,6 +34,9 @@ export default function MentorCompleteStudentProfile() {
       label: "Job Company",
       type: "text",
     },
+
+
+  
     {
       name: "industry",
       label: "Industry",

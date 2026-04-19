@@ -52,6 +52,7 @@ export interface IMentor extends Document {
   avatar?: string;
   gender?: "male" | "female" | "other";
   dateOfBirth?: Date;
+  role: 'admin' | 'mentor' | 'student'
 
   jobTitle: string;
   company: string;
